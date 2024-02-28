@@ -2,7 +2,7 @@ n, k = map(int, input().split())
 array_a = list(map(int, input().split()))
 array_b = list(map(int, input().split()))
 
-# a에서 젤 작은 거랑 b에서 젤 큰 거를 k번 바꿔치기 하면 됨
+# a, b 정렬 후 a에서 젤 작은 거랑 b에서 젤 큰 거를 k번 바꿔치기 하면 됨
 array_a.sort()
 array_b.sort()
 
