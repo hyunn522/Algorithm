@@ -1,5 +1,13 @@
 {
   "files": {
+    "BoJ/29700.py": [
+      {
+        "id": "7b9992c7-6cf9-4cd2-8482-6af01e77647d",
+        "line": 14,
+        "version": 472,
+        "index": 228
+      }
+    ],
     "main.py": [
       {
         "id": "eba9eb59-03b1-4d21-aebf-f64c59c4d4d4",
