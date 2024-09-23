@@ -1,15 +1,17 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
+
+    // 스택 구현
+    static Stack<Integer> stack = new Stack<>();
+    static StringBuilder sb = new StringBuilder();
+        
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int input = Integer.parseInt(br.readLine());
-
-        // 스택 구현
-        ArrayList<Integer> stack = new ArrayList<>();
 
         for (int i = 0; i < input; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -17,32 +19,24 @@ public class Main {
             switch (command) {
                 case 1:
                     if (st.hasMoreTokens()) {
-                        stack.add(Integer.parseInt(st.nextToken()));
+                        stack.push(Integer.parseInt(st.nextToken()));
                     }
                     break;
                 case 2:
-                    if (stack.size() > 0) {
-                        System.out.println(stack.get(stack.size() - 1));
-                        stack.remove(stack.size() - 1);
-                    } else {
-                        System.out.println(-1);
-                    }
+                    sb.append(stack.isEmpty() ? -1 : stack.pop()).append("\n");
                     break;
                 case 3:
-                    System.out.println(stack.size());
+                    sb.append(stack.size()).append("\n");
                     break;
                 case 4:
-                    if (stack.size() == 0) System.out.println(1);
-                    else
-                        System.out.println(0);
+                    sb.append(stack.isEmpty() ? 1 : 0).append("\n");
                     break;
                 case 5:
-                    if (stack.size() > 0) 
-                        System.out.println(stack.get(stack.size() - 1));
-                     else 
-                        System.out.println(-1);
+                    sb.append(stack.isEmpty() ? -1 : stack.peek()).append("\n");
                     break;
             }
         }
+        br.close();
+        System.out.println(sb);
     }
 }
