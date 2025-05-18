@@ -12,48 +12,27 @@ class Solution
             sc.nextInt(); // 테스트 케이스 번호
 
             int[][] map = new int[100][100]; // 사다리
+            int x = -1;
             for (int i = 0; i < 100; i++) {
                 for (int j = 0; j < 100; j++) {
                     map[i][j] = sc.nextInt();
+                    if (map[i][j] == 2) x = j;
                 }
             }
 
-            int answer = 0;
-            for (int i = 0; i < 100; i++) {
-                if (map[0][i] == 0) continue; // 시작 점이 사다리가 아닌 경우
-
-                // 사다리 출발
-                int cur = i;
-                for (int j = 0; j < 100; j++) {
-                    if (j == 99) {
-                        if (map[j][cur] == 2) answer = i;
-                        break;
-                    }
-
-                    // 가능하다면 좌우 방향으로 이동
-                    if (cur > 0 && cur < 99) {
-                        if (map[j][cur - 1] == 1) {
-                            while (cur > 0 && map[j][cur - 1] == 1) {
-                                cur--;
-                            }
-                        } else if (map[j][cur + 1] == 1) {
-                            while (cur < 99 && map[j][cur + 1] == 1) {
-                                cur++;
-                            }
-                        }
-                    } else if (cur == 0 && map[j][cur + 1] == 1) {
-                        while (cur < 99 && map[j][cur + 1] == 1) {
-                            cur++;
-                        }
-                    } else if (cur == 99 && map[j][cur - 1] == 1) {
-                        while (cur > 0 && map[j][cur - 1] == 1) {
-                            cur--;
-                        }
-                    }
+            // 도착점에서부터 거꾸로 거슬러올라가기
+            int h = 99;
+            while (h > 0) {
+                if (x > 0 && map[h][x - 1] == 1) {
+                    while (x > 0 && map[h][x - 1] == 1) x--;
+                } else if (x < 99 && map[h][x + 1] == 1) {
+                    while (x < 99 && map[h][x + 1] == 1) x++;
                 }
+
+                h--;
             }
 
-            sb.append("#" + test_case + " " + answer + "\n");
+            sb.append("#" + test_case + " " + x + "\n");
         }
 
         System.out.println(sb);
