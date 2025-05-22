@@ -13,10 +13,10 @@ class Solution {
             char cur = '0';
             int answer = 0;
 
-            for (int i = 0; i < original.length; i++) {
-                if (original[i] != cur) {
+            for (char c : original) {
+                if (c != cur) {
                     answer++;
-                    cur = original[i];
+                    cur = c;
                 }
             }
 
