@@ -5,12 +5,13 @@ class Solution {
         List<File> fileList = new ArrayList<>();
         
         for (int i = 0; i < files.length; i++) {
-            fileList.add(new File(i, files[i]));
+            String file = files[i];
+            fileList.add(new File(i, file));
         }
         
         Collections.sort(fileList, (f1, f2) -> {
             // 1. head 비교
-            int cmp = f1.head.compareTo(f2.head);
+            int cmp = f1.head.toUpperCase().compareTo(f2.head.toUpperCase());
             if (cmp != 0) return cmp;
 
             // 2. number 비교
@@ -21,8 +22,9 @@ class Solution {
             return Integer.compare(f1.idx, f2.idx);
         });
             
-        String[] answer = new String[fileList.size()];
-        for (int i = 0; i < fileList.size(); i++) {
+        int cnt = fileList.size();
+        String[] answer = new String[cnt];
+        for (int i = 0; i < cnt; i++) {
             answer[i] = fileList.get(i).original;
         }
         return answer;
@@ -33,28 +35,39 @@ class Solution {
         String original;
         String head;
         int number;
+        String tail;
         
         File(int idx, String original) {
             this.idx = idx;
             this.original = original;
             
-            int i = 0;
-            int length = original.length();
+            String head = "", number = "", tail = "";
+            char[] fileChars = original.toCharArray();
+            boolean isNumber = false;
+            int numberCnt = 0;
             
-            // HEAD
-            while (i < length && (original.charAt(i) < '0' || original.charAt(i) > '9')) {
-                i++;
+            for (int j = 0; j < original.length(); j++) {
+                char c = fileChars[j];
+                if (c >= '0' && c <= '9') {
+                    if (numberCnt == 5) {
+                        tail += String.valueOf(c);
+                    } else {
+                        isNumber = true;
+                        number += String.valueOf(c);
+                        numberCnt++;
+                    }
+                } else {
+                    if (!isNumber) {
+                        head += String.valueOf(c); 
+                    } else {
+                        tail += String.valueOf(c);
+                    }
+                }
             }
-            this.head = original.substring(0, i).toUpperCase();
-                
-            // NUMBER
-            int j = i;
-            int cnt = 0;
-            while (j < length && (original.charAt(j) >= '0' && original.charAt(j) <= '9') && cnt < 5) {
-                j++;
-                cnt++;
-            }
-            this.number = Integer.parseInt(original.substring(i, j));
+            
+            this.head = head;
+            this.number = Integer.parseInt(number);
+            this.tail = tail;
         }
     }
 }
