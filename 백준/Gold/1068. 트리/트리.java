@@ -52,21 +52,20 @@ public class Main {
         int answer = 0;
         Queue<Integer> queue = new ArrayDeque<>();
         queue.offer(root);
-        boolean[] visited = new boolean[n];
-        visited[root] = true;
 
         while (!queue.isEmpty()) {
             int cur = queue.poll();
+            int validChild = 0;
 
-            if (graph[cur].isEmpty()) {
-                answer++;
-            } else {
-                for (int next : graph[cur]) {
-                    if (next != m && !visited[next]) {
-                        queue.offer(next);
-                        visited[next] = true;
-                    }
+            for (int next : graph[cur]) {
+                if (next != m) {
+                    queue.offer(next);
+                    validChild++;
                 }
+            }
+
+            if (validChild == 0) {
+                answer++;
             }
         }
 
