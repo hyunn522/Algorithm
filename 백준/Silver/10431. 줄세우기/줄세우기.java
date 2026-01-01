@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -12,31 +13,24 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         int p = Integer.parseInt(br.readLine());
 
-        for (int t = 0; t < p; t++) {
+        while (p-- > 0) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             sb.append(Integer.parseInt(st.nextToken())).append(" ");
+
+            List<Integer> line = new ArrayList<>();
             int answer = 0;
 
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
             for (int i = 0; i < 20; i++) {
-                int student = Integer.parseInt(st.nextToken());
-                if (i == 0) {
-                    pq.offer(student);
-                    continue;
-                }
+                int curStudent = Integer.parseInt(st.nextToken());
 
-                if (student < pq.peek()) {
-                    List<Integer> temp = new ArrayList<>();
-
-                    while (!pq.isEmpty() && student < pq.peek()) {
-                        temp.add(pq.poll());
+                for (int student : line) {
+                    if (student > curStudent) {
                         answer++;
                     }
-
-                    pq.addAll(temp);
                 }
 
-                pq.offer(student);
+                line.add(curStudent);
+                Collections.sort(line);
             }
 
             sb.append(answer).append("\n");
