@@ -2,49 +2,28 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-
-    static int n, answer = 0;
-    static Counsel[] counsels;
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        counsels = new Counsel[n];
+        int n = Integer.parseInt(br.readLine());
+        int[][] schedule = new int[n + 1][2];
+        int[] dp = new int[n + 2]; // i일부터 n + 1일까지 낼 수 있는 최대 수익
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 1; i <= n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            int t = Integer.parseInt(st.nextToken());
-            int p = Integer.parseInt(st.nextToken());
-            counsels[i] = new Counsel(t, p);
+            schedule[i][0] = Integer.parseInt(st.nextToken());
+            schedule[i][1] = Integer.parseInt(st.nextToken());
         }
 
-        dfs(0, 0);
-        System.out.println(answer);
+        for (int i = n; i >= 1; i--) {
+            int next = i + schedule[i][0];
+
+            if (next > n + 1) {
+                dp[i] = dp[i + 1];
+            } else {
+                dp[i] = Math.max(dp[i + 1], schedule[i][1] + dp[next]);
+            }
+        }
+
+        System.out.println(dp[1]);
     }
-
-    private static void dfs(int index, int sum) {
-        if (index == n) {
-            answer = Math.max(answer, sum);
-            return;
-        }
-
-        // case 1) 현재 날짜에서 상담을 하는 경우
-        int newIndex = index + counsels[index].time;
-        if (newIndex <= n) {
-            dfs(newIndex, sum + counsels[index].price);
-        }
-
-        // case 2) 현재 날짜에서 상담을 하지 않는 경우
-        dfs(index + 1, sum);
-    }
-
-    static class Counsel {
-        int time, price;
-
-        Counsel(int time, int price) {
-            this.time = time;
-            this.price = price;
-        }
-    }
-
 }
