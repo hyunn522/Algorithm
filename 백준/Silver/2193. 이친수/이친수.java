@@ -2,24 +2,28 @@ import java.io.*;
 
 public class Main {
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        long[] dp = new long[n];
+        long[] dp = new long[n + 1];
 
-        if (n == 1 || n == 2) {
+        if (n == 1) {
             System.out.println(1);
-        } else if (n == 3) {
-            System.out.println(2);
-        } else {
-            dp[0] = 1;
-            dp[1] = 1;
-            dp[2] = 2;
-            for (int i = 2; i < n; i++) {
-                dp[i] = dp[i - 1] + dp[i - 2];
-            }
-            System.out.println(dp[n - 1]);
+            return;
         }
-        // 1 -> 1(1) / 2 -> 1(10) / 3 -> 2(100, 101) / 4 -> 3(1000, 1001, 1010) / 5 -> 5(10000, 10001, 10010, 10100, 10101)
+
+        if (n == 2) {
+            System.out.println(1);
+            return;
+        }
+
+        dp[1] = 1;
+        dp[2] = 1;
+
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 2] + dp[i - 1];
+        }
+
+        System.out.println(dp[n]);
     }
 }
