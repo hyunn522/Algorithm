@@ -9,14 +9,16 @@ public class Main {
         PriorityQueue<Integer> pq = new PriorityQueue<>();
 
         for (int i = 0; i < n; i++) {
-            pq.add(Integer.parseInt(br.readLine()));
+            pq.offer(Integer.parseInt(br.readLine()));
         }
 
         int answer = 0;
-        for (int i = 0; i < n - 1; i++) {
-            int sum = pq.poll() + pq.poll();
-            pq.add(sum);
+        while (pq.size() >= 2) {
+            int a = pq.poll();
+            int b = pq.poll();
+            int sum = a + b;
             answer += sum;
+            pq.offer(sum);
         }
 
         System.out.println(answer);
