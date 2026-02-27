@@ -1,44 +1,38 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        List<int[]> list = new ArrayList<>();
+        List<int[]> times = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            list.add(new int[]{start, end});
+            times.add(new int[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
         }
 
-        list.sort((a1, a2) -> {
-            int start1 = a1[0];
-            int end1 = a1[1];
-            int start2 = a2[0];
-            int end2 = a2[1];
-
-            if (end1 != end2) {
-                return end1 - end2;
+        // 끝나는 시간이 빠른 순서로 정렬
+        // 동시에 끝난다면 빨리 시작하는 순서로 정렬
+        times.sort((t1, t2) -> {
+            if (t1[1] != t2[1]) {
+                return t1[1] - t2[1];
             } else {
-                return start1 - start2;
+                return t1[0] - t2[0];
             }
         });
 
-        int lastEnd = 0;
         int answer = 0;
-        for (int[] arr : list) {
-            if (arr[0] >= lastEnd) { // 겹치지 않으면 선택
+        int lastTime = 0;
+        for (int i = 0; i < n; i++) {
+            // 현재 회의의 시작 시간이 마지막으로 선택한 회의의 종료 시간보다 이후면 현재 회의 가능
+            int start = times.get(i)[0];
+            if (start >= lastTime) {
                 answer++;
-                lastEnd = arr[1];
+                lastTime = times.get(i)[1]; // 마지막으로 선택한 회의의 종료 시간 갱신
             }
         }
-
         System.out.println(answer);
     }
 }
