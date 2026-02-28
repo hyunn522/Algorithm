@@ -3,36 +3,38 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    private static int n, s;
-    private static int[] arr;
-    private static int result = 0;
+    static int n, s, answer = 0;
+    static int[] nums;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         s = Integer.parseInt(st.nextToken());
-        arr = new int[n];
+        nums = new int[n];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            nums[i] = Integer.parseInt(st.nextToken());
         }
-        br.close();
 
         dfs(0, 0);
-        if (s == 0) result--;
-        
-        System.out.println(result);
+        if (s == 0) {
+            answer--;
+        }
+
+        System.out.println(answer);
     }
 
-    private static void dfs(int start, int sum) {
-        if (start == n) {
-            if (sum == s) result++;
+    private static void dfs(int idx, int sum) {
+        if (idx == n) {
+            if (sum == s) {
+                answer++;
+            }
             return;
         }
 
-        dfs(start + 1, sum + arr[start]);
-        dfs(start + 1, sum);
+        dfs(idx + 1, sum + nums[idx]); // idx 선택
+        dfs(idx + 1, sum); // idx 선택 X
     }
 }
