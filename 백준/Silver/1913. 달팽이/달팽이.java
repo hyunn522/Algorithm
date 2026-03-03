@@ -7,54 +7,35 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
         int m = Integer.parseInt(br.readLine());
 
-        // 시계 방향으로 회전
-        int[] dx = {-1, 0, 1, 0};
+        // 큰 숫자부터 채우기 -> 반시계 방향으로 회전
+        int[] dx = {1, 0, -1, 0};
         int[] dy = {0, 1, 0, -1};
 
         int[][] map = new int[n][n];
-        int x = n / 2;
-        int y = n / 2;
+        int d = 0;
+        int x = 0;
+        int y = 0;
         int answerX = -1;
         int answerY = -1;
 
-        int curN = 1;
-        int curIdx = 1; // 각 묶음별로 2번씩 나아가야 함
-        int totalCnt = 1; // 이번 방향에서 총 나아가야 할 횟수
-        int cnt = 0; // 이번 방향에서 나아간 횟수
-        int d = 0;
-
-        map[x][y] = curN;
-        if (curN == m) {
-            answerX = x;
-            answerY = y;
-        }
-
-        while (curN < n * n) {
-            // 이동 먼저
-            x += dx[d];
-            y += dy[d];
-
-            curN++;
-            map[x][y] = curN;
-            if (curN == m) {
+        for (int i = n * n; i >= 1; i--) {
+            map[x][y] = i;
+            if (i == m) {
                 answerX = x;
                 answerY = y;
             }
 
-            cnt++;
+            int nx = x + dx[d];
+            int ny = y + dy[d];
 
-            // 이번 방향 다 나아갔으면 방향 전환
-            if (cnt == totalCnt) {
+            // 막히면 방향 꺾기
+            if ((nx < 0 || ny < 0 || nx >= n || ny >= n) || map[nx][ny] != 0) {
                 d = (d + 1) % 4;
-                cnt = 0;
-                if (curIdx == 2) {
-                    // 이번 묶음 끝난 경우
-                    totalCnt++;
-                    curIdx = 1;
-                } else {
-                    curIdx++;
-                }
             }
+
+            // 다음 좌표 갱신
+            x += dx[d];
+            y += dy[d];
         }
 
         StringBuilder sb = new StringBuilder();
