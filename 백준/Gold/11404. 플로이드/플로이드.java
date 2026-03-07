@@ -3,8 +3,6 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static final int MAX = 987654321;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -12,42 +10,43 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
         int m = Integer.parseInt(br.readLine());
         int[][] cost = new int[n][n];
+
+        int MAX = 123456789;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (i == j) cost[i][j] = 0;
-                else cost[i][j] = MAX;
+                if (i == j) {
+                    cost[i][j] = 0;
+                } else {
+                    cost[i][j] = MAX;
+                }
             }
         }
 
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int startCity = Integer.parseInt(st.nextToken()) - 1;
-            int endCity = Integer.parseInt(st.nextToken()) - 1;
-            int newCost = Integer.parseInt(st.nextToken());
-            cost[startCity][endCity] = Math.min(cost[startCity][endCity], newCost);
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            int c = Integer.parseInt(st.nextToken());
+            cost[a][b] = Math.min(cost[a][b], c);
         }
 
-        // 모든 도시에 대해 최소 비용 계산
-        for (int city = 0; city < n; city++) {
+        for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (cost[i][city] != MAX && cost[city][j] != MAX) {
-                        int newCost = cost[i][city] + cost[city][j];
-                        if (newCost < cost[i][j]) cost[i][j] = newCost;
+                    if (cost[i][k] != MAX && cost[k][j] != MAX) {
+                        cost[i][j] = Math.min(cost[i][j], cost[i][k] + cost[k][j]);
                     }
                 }
             }
         }
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (cost[i][j] == MAX) sb.append("0 ");
-                else sb.append(cost[i][j] + " ");
+        for (int[] arr : cost) {
+            for (int i : arr) {
+                sb.append((i == MAX ? 0 : i) + " ");
             }
             sb.append("\n");
         }
         System.out.println(sb);
     }
-
 }
