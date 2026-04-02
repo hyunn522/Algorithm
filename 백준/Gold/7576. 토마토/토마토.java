@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -14,57 +16,60 @@ public class Main {
         int m = Integer.parseInt(st.nextToken());
         int n = Integer.parseInt(st.nextToken());
         int[][] box = new int[n][m];
-        Queue<int[]> queue = new ArrayDeque<>();
+        boolean[][] visited = new boolean[n][m];
+        Queue<int[]> tomatoes = new ArrayDeque<>();
 
+        // 익지 않은 토마토의 개수
         int emptyCnt = 0;
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
                 box[i][j] = Integer.parseInt(st.nextToken());
-                if (box[i][j] == 0) {
+                if (box[i][j] == 0) { // 익지 않은 토마토의 경우
                     emptyCnt++;
-                } else if (box[i][j] == 1) {
-                    queue.offer(new int[]{i, j});
+                } else if (box[i][j] == 1) { // 익은 토마토의 경우
+                    tomatoes.offer(new int[]{i, j});
                 }
             }
         }
 
+        // 저장될 때부터 모든 토마토가 익어있는 경우
         if (emptyCnt == 0) {
             System.out.println(0);
             return;
         }
 
-        int cnt = 0;
+        int cnt = 0; // 익은 토마토의 총 개수
         int answer = 0;
 
-        while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int nx = cur[0] + dx[i];
-                int ny = cur[1] + dy[i];
+        while (!tomatoes.isEmpty()) {
+            int size = tomatoes.size(); // 현재 날짜의 토마토 개수
+            for (int s = 0; s < size; s++) {
+                int[] cur = tomatoes.poll();
+                int curX = cur[0];
+                int curY = cur[1];
 
-                if (nx < 0 || ny < 0 || nx >= n || ny >= m) {
-                    continue;
+                for (int i = 0; i < 4; i++) {
+                    int nx = curX + dx[i];
+                    int ny = curY + dy[i];
+
+                    if (nx < 0 || ny < 0 || nx >= n || ny >= m) {
+                        continue;
+                    }
+
+                    if (!visited[nx][ny] && box[nx][ny] == 0) {
+                        visited[nx][ny] = true;
+                        tomatoes.offer(new int[]{nx, ny});
+                        cnt++;
+                    }
                 }
+            }
 
-                if (box[nx][ny] != 0) {
-                    continue;
-                }
-
-                // 토마토가 익은 일수 자체를 box에 저장
-                box[nx][ny] = box[cur[0]][cur[1]] + 1;
-                queue.offer(new int[]{nx, ny});
-                cnt++;
+            if (cnt > 0 && !tomatoes.isEmpty()) {
+                answer++;
             }
         }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                answer = Math.max(answer, box[i][j]);
-            }
-        }
-
-        // box 값이 1부터 시작이니까 (최대값 - 1)이 정답
-        System.out.println(cnt == emptyCnt ? answer - 1 : -1);
+        
+        System.out.println(cnt == emptyCnt ? answer : -1);
     }
 }
