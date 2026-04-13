@@ -1,61 +1,65 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Main {
 
-    static int n;
-    static int[][] map;
-    static int[] dx = {0, -1, 0, 1};
-    static int[] dy = {-1, 0, 1, 0};
-    static List<Integer> houses = new ArrayList<>();
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-
-        n = Integer.parseInt(br.readLine());
-        map = new int[n][n];
+        int n = Integer.parseInt(br.readLine());
+        int[][] map = new int[n][n];
+        boolean[][] visited = new boolean[n][n];
 
         for (int i = 0; i < n; i++) {
-            char[] inputs = br.readLine().toCharArray();
+            String input = br.readLine();
             for (int j = 0; j < n; j++) {
-                map[i][j] = inputs[j] - '0';
+                map[i][j] = input.charAt(j) - '0';
             }
         }
 
+        int[] dx = {0, 0, 1, -1};
+        int[] dy = {1, -1, 0, 0};
+        PriorityQueue<Integer> answers = new PriorityQueue<>();
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (map[i][j] == 1) {
-                    houses.add(dfs(i, j));
+                if (!visited[i][j] && map[i][j] == 1) {
+                    int answer = 1;
+                    Queue<int[]> queue = new ArrayDeque<>();
+                    queue.offer(new int[]{i, j}); // x좌표, y좌표
+                    visited[i][j] = true;
+
+                    while (!queue.isEmpty()) {
+                        int[] cur = queue.poll();
+                        int curX = cur[0];
+                        int curY = cur[1];
+
+                        for (int d = 0; d < 4; d++) {
+                            int nx = curX + dx[d];
+                            int ny = curY + dy[d];
+
+                            if ((nx < 0 || ny < 0 || nx >= n || ny >= n) || visited[nx][ny]) {
+                                continue;
+                            }
+
+                            if (map[nx][ny] == 1) {
+                                queue.offer(new int[]{nx, ny});
+                                visited[nx][ny] = true;
+                                answer++;
+                            }
+                        }
+                    }
+                    answers.offer(answer);
                 }
             }
         }
 
-        Collections.sort(houses);
-        sb.append(houses.size() + "\n");
-        for (int house : houses) {
-            sb.append(house + "\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append(answers.size()).append("\n");
+        while (!answers.isEmpty()) {
+            sb.append(answers.poll()).append("\n");
         }
-        System.out.println(sb);
-    }
-
-    static int dfs(int x, int y) {
-        int result = 1;
-        map[x][y] = 0;
-
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-
-            if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
-
-            if (map[nx][ny] == 1) {
-                result += dfs(nx, ny);
-            }
-        }
-
-        return result;
+        System.out.print(sb);
     }
 }
