@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.TreeSet;
 
 public class Main {
 
@@ -9,13 +9,18 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
         int[] graph = new int[n + 1];
+        boolean[] visited = new boolean[n + 1];
 
         for (int i = 1; i <= n; i++) {
             graph[i] = Integer.parseInt(br.readLine());
         }
 
-        TreeSet<Integer> result = new TreeSet<>();
+        List<Integer> result = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
+            if (visited[i]) {
+                continue;
+            }
+
             boolean isCycle = false;
             List<Integer> answers = new ArrayList<>(); // 사이클 이루는 노드들의 리스트
             answers.add(i);
@@ -40,14 +45,20 @@ public class Main {
             }
 
             if (isCycle) {
-                result.addAll(answers);
+                for (int answer : answers) {
+                    visited[answer] = true;
+                    result.add(answer);
+                }
             }
         }
 
+        Collections.sort(result);
+        int size = result.size();
+
         StringBuilder sb = new StringBuilder();
-        sb.append(result.size()).append("\n");
-        while (!result.isEmpty()) {
-            sb.append(result.pollFirst()).append("\n");
+        sb.append(size).append("\n");
+        for (int i = 0; i < size; i++) {
+            sb.append(result.get(i)).append("\n");
         }
         System.out.print(sb);
     }
