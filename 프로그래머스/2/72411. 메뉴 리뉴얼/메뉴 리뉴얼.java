@@ -3,8 +3,7 @@ import java.util.Map.*;
 
 class Solution {
     
-    static Map<String, Integer> map = new HashMap<>(); // {조합, 빈도수}
-    static String targetOrder;
+    static Map<String, Integer> map; // {조합, 빈도수}
     
     public String[] solution(String[] orders, int[] course) {
         List<String> answerList = new ArrayList<>();
@@ -19,57 +18,47 @@ class Solution {
         // 2. 코스 길이별 조합 생성
         for (int l : course) {
             // 각 주문에서 길이가 l인 조합 생성
+            map = new HashMap<>();
             for (String order : orders) {
-                targetOrder = order;
-                dfs(0, "", 0, l);
+                if (order.length() < l) {
+                    continue;
+                }
+                combine(order, 0, l, new StringBuilder());
             }
             
             // 3. 코스 길이별 최빈값 찾음
-            int maxCnt = Integer.MIN_VALUE;
-            List<String> result = new ArrayList<>();
-            for (Entry<String, Integer> e : map.entrySet()) {
-                if (e.getValue() < 2) {
-                    continue;
-                }
-                
-                if (e.getValue() > maxCnt) {
-                    result.clear();
-                    result.add(e.getKey());
-                    maxCnt = e.getValue();
-                } else if (e.getValue() == maxCnt) {
-                    result.add(e.getKey());
-                }
+            int maxCnt = 0;
+            for (int c : map.values()) {
+                maxCnt = Math.max(maxCnt, c);
+            }
+            
+            if (maxCnt < 2) {
+                continue;
             }
             
             // 4. 정답 리스트에 추가
-            for (String r : result) {
-                answerList.add(r);
+            for (Entry<String, Integer> e : map.entrySet()) {
+                if (e.getValue() == maxCnt) {
+                    answerList.add(e.getKey());
+                }
             }
-            
-            map.clear();
         }
         
-        String[] answer = new String[answerList.size()];
-        for (int i = 0; i < answerList.size(); i++) {
-            answer[i] = answerList.get(i);
-        }
-        Arrays.sort(answer);
-        return answer;
+        Collections.sort(answerList);
+        return answerList.toArray(new String[0]);
     }
     
-    static void dfs(int curIdx, String cur, int curLength, int targetLength) {
+    static void combine(String order, int start, int targetLength, StringBuilder sb) {
         // 현재 조합에 대한 빈도수 저장
-        if (curLength == targetLength) {
-            map.put(cur, map.getOrDefault(cur, 0) + 1);
+        if (sb.length() == targetLength) {
+            map.merge(sb.toString(), 1, Integer::sum);
             return;
         }
         
-        // 인덱스 초과 방지
-        if (curIdx == targetOrder.length()) {
-            return;
+        for (int i = start; i < order.length(); i++) {
+            sb.append(order.charAt(i));
+            combine(order, i + 1, targetLength, sb);
+            sb.deleteCharAt(sb.length() - 1); // 백트래킹
         }
-        
-        dfs(curIdx + 1, cur, curLength, targetLength);
-        dfs(curIdx + 1, cur + targetOrder.charAt(curIdx), curLength + 1, targetLength);
     }
 }
